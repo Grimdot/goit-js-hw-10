@@ -17,51 +17,45 @@ function clearMarkup() {
   countryInfoWrap.innerHTML = '';
 }
 
-function renderList(countriesList) {
+function render(countriesList) {
   clearMarkup();
 
-  const markup = countriesList.map(country => {
-    return `
+  if (countriesList.length > 10) {
+    Notiflix.Notify.info(
+      'Too many matches found. Please enter a more specific name.'
+    );
+  }
+
+  if (countriesList.length >= 2 && countriesList.length <= 10) {
+    const markup = countriesList.map(country => {
+      console.log(country);
+      return `
         <li>
           <img src="${country.flags.svg}" alt="flag" width="40" />
-          <p>${country.name}</p>
+          <p>${country.name.official}</p>
         </li>
         <hr>`;
-  });
+    });
+    countryListWrap.insertAdjacentHTML('beforeend', markup.join(''));
+  }
 
-  // const markup = countriesList.reduce(
-  //   (acc, country) => {
+  if (countriesList.length === 1) {
+    const countryInfo = countriesList[0];
 
-  //     acc += `
-  //       <li>
-  //         <img src="${country.flags.svg}" alt="flag" width="40" />
-  //         <p>${country.name}</p>
-  //       </li>
-  //       <hr>`;
-  //     return acc;
-  //   },
+    const countryLanguages = Object.values(countryInfo.languages);
 
-  //   ''
-  // );
-
-  countryListWrap.insertAdjacentHTML('beforeend', markup.join(''));
-}
-
-function renderInfo(countryInfo) {
-  clearMarkup();
-
-  const contryLanguages = countryInfo.languages.map(language => language.name);
-  const markup = `
+    const markup = `
           <div class = "country-name">
             <img src="${countryInfo.flags.svg}" alt="flag" width="40" />
-            <p>${countryInfo.name}</p>
+            <p>${countryInfo.name.official}</p>
           </div>
           <p><span>Capital: </span>${countryInfo.capital}</p>
           <p><span>Population: </span>${countryInfo.population}</p>
-          <p><span>Languages: </span>${contryLanguages.join(', ')}</p>
+          <p><span>Languages: </span>${countryLanguages.join(', ')}</p>
         `;
 
-  countryInfoWrap.insertAdjacentHTML('beforeend', markup);
+    countryInfoWrap.insertAdjacentHTML('beforeend', markup);
+  }
 }
 
 function onInputChange(e) {
@@ -73,17 +67,7 @@ function onInputChange(e) {
   }
   fetchCountries(inputValue)
     .then(countries => {
-      if (countries.length > 10) {
-        Notiflix.Notify.info(
-          'Too many matches found. Please enter a more specific name.'
-        );
-        return;
-      }
-      if (countries.length === 1) {
-        renderInfo(countries[0]);
-        return;
-      }
-      renderList(countries);
+      render(countries);
     })
     .catch(console.log);
 }
