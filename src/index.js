@@ -8,13 +8,15 @@ import fetchCountries from './fetchCountries';
 
 const DEBOUNCE_DELAY = 300;
 
-const countryListWrap = document.querySelector('.country-list');
-const countryInfoWrap = document.querySelector('.country-info');
-const input = document.querySelector('#search-box');
+const refs = {
+  countryListWrap: document.querySelector('.country-list'),
+  countryInfoWrap: document.querySelector('.country-info'),
+  input: document.querySelector('#search-box'),
+};
 
 function clearMarkup() {
-  countryListWrap.innerHTML = '';
-  countryInfoWrap.innerHTML = '';
+  refs.countryListWrap.innerHTML = '';
+  refs.countryInfoWrap.innerHTML = '';
 }
 
 function render(countriesList) {
@@ -35,7 +37,7 @@ function render(countriesList) {
         </li>
         <hr />`;
     });
-    countryListWrap.insertAdjacentHTML('beforeend', markup.join(''));
+    refs.countryListWrap.insertAdjacentHTML('beforeend', markup.join(''));
   }
 
   if (countriesList.length === 1) {
@@ -53,7 +55,7 @@ function render(countriesList) {
           <p><span>Languages: </span>${countryLanguages.join(', ')}</p>
         `;
 
-    countryInfoWrap.insertAdjacentHTML('beforeend', markup);
+    refs.countryInfoWrap.insertAdjacentHTML('beforeend', markup);
   }
 }
 
@@ -71,4 +73,4 @@ function onInputChange(e) {
     .catch(console.log);
 }
 
-input.addEventListener('input', debounce(onInputChange, DEBOUNCE_DELAY));
+refs.input.addEventListener('input', debounce(onInputChange, DEBOUNCE_DELAY));
