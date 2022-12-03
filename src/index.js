@@ -27,30 +27,29 @@ function render(countriesList) {
   }
 
   if (countriesList.length >= 2 && countriesList.length <= 10) {
-    const markup = countriesList.map(country => {
-      console.log(country);
+    const markup = countriesList.map(({ flags, name }) => {
       return `
         <li>
-          <img src="${country.flags.svg}" alt="flag" width="40" />
-          <p>${country.name.official}</p>
+          <img src="${flags.svg}" alt="flag" width="40" />
+          <p>${name.official}</p>
         </li>
-        <hr>`;
+        <hr />`;
     });
     countryListWrap.insertAdjacentHTML('beforeend', markup.join(''));
   }
 
   if (countriesList.length === 1) {
-    const countryInfo = countriesList[0];
+    const { flags, name, capital, population, languages } = countriesList[0];
 
-    const countryLanguages = Object.values(countryInfo.languages);
+    const countryLanguages = Object.values(languages);
 
     const markup = `
           <div class = "country-name">
-            <img src="${countryInfo.flags.svg}" alt="flag" width="40" />
-            <p>${countryInfo.name.official}</p>
+            <img src="${flags.svg}" alt="flag" width="40" />
+            <p>${name.official}</p>
           </div>
-          <p><span>Capital: </span>${countryInfo.capital}</p>
-          <p><span>Population: </span>${countryInfo.population}</p>
+          <p><span>Capital: </span>${capital}</p>
+          <p><span>Population: </span>${population}</p>
           <p><span>Languages: </span>${countryLanguages.join(', ')}</p>
         `;
 

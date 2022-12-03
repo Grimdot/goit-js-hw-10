@@ -12,6 +12,16 @@ body {
   line-height: 1.5;
 }
 
+/* ---------Dots------------ */
+
+body {
+  background: linear-gradient(90deg, #ffffff 20px, transparent 1%) center,
+    linear-gradient(#ffffff 20px, transparent 1%) center, #54545a71;
+  background-size: 22px 22px;
+}
+
+/*---------------------------- */
+
 #search-box {
   font: inherit;
   padding: 8px;
