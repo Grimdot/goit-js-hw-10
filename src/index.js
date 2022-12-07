@@ -4,9 +4,11 @@ import Notiflix from 'notiflix';
 import './css/styles.css';
 import 'notiflix/dist/notiflix-3.2.5.min.css';
 
-import fetchCountries from './fetchCountries';
+import CountriesSearchService from './fetchCountries';
 
 const DEBOUNCE_DELAY = 300;
+
+const countriesSearch = new CountriesSearchService();
 
 const refs = {
   countryListWrap: document.querySelector('.country-list'),
@@ -22,13 +24,16 @@ function clearMarkup() {
 function render(countriesList) {
   clearMarkup();
 
-  if (countriesList.length > 10) {
+  const { length: amountOfCountries } = countriesList;
+
+  if (amountOfCountries > 10) {
     Notiflix.Notify.info(
       'Too many matches found. Please enter a more specific name.'
     );
+    return;
   }
 
-  if (countriesList.length >= 2 && countriesList.length <= 10) {
+  if (amountOfCountries >= 2 && amountOfCountries <= 10) {
     const markup = countriesList.map(({ flags, name }) => {
       return `
         <li>
@@ -38,9 +43,10 @@ function render(countriesList) {
         <hr />`;
     });
     refs.countryListWrap.insertAdjacentHTML('beforeend', markup.join(''));
+    return;
   }
 
-  if (countriesList.length === 1) {
+  if (amountOfCountries === 1) {
     const { flags, name, capital, population, languages } = countriesList[0];
 
     const countryLanguages = Object.values(languages);
@@ -56,6 +62,7 @@ function render(countriesList) {
         `;
 
     refs.countryInfoWrap.insertAdjacentHTML('beforeend', markup);
+    return;
   }
 }
 
@@ -66,7 +73,11 @@ function onInputChange(e) {
     clearMarkup();
     return;
   }
-  fetchCountries(inputValue)
+
+  countriesSearch.countryName = inputValue;
+
+  countriesSearch
+    .fetchCountries(countriesSearch.countryName)
     .then(countries => {
       render(countries);
     })
